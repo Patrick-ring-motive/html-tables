@@ -33,7 +33,7 @@ $Row.prototype = new Proxy(_RowPrototype,{
     }
     return Reflect.get(...arguments);
   },
-  get(target, prop, receiver) {
+  set(target, prop, receiver) {
     const $this = receiver ?? target;
     if(isNum(prop) && prop >= 0){
         for(const td of $this){
