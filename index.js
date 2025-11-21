@@ -73,6 +73,15 @@ const getCells = el =>{
     return elementSelectAll(el,'td:not(td td)');
 };
 
+const fillCells = (row,num) =>{
+        const numt1 = num + 1;
+        for(let i = 0;i !== numt1; ++i){
+            if(!getCells(row)[i]){
+                row.appendChild(create('td'));
+            }
+        }
+};
+
 const Row = class Row extends HTMLTableRowElement{
     constructor(){
         return Object.setPrototypeOf(create('tr'),Row.prototype);
