@@ -112,7 +112,7 @@ const elementSelectAll = (el,query) =>{
 };
 
 const getCells = el =>{
-    return elementSelectAll(el,'td:not(td td)');
+    return el?.cells ?? elementSelectAll(el,'td:not(td td)');
 };
 
 const fillCells = (row,num) =>{
@@ -206,12 +206,12 @@ extend($Row,HTMLTableRowElement);
 extend(Row,$Row);
 
 const getRows = el => {
-    return elementSelectAll(el, 'tr:not(tr tr)');
+    return el?.rows ?? elementSelectAll(el, 'tr:not(tr tr)');
 };
 
-const $Table = function $Table(){};
 
-const Table = class Table {
+
+const Table = class Table extends HTMLTableElement {
     constructor(data) {
         const table = Object.setPrototypeOf(create('table'), Table.prototype);
         if(DEBUG)console.log({data});
@@ -251,9 +251,9 @@ const Table = class Table {
     }
 };
 
-const _TablePrototype = $Table.prototype;
+const _TablePrototype = Object.getPrototypeOf(Table.prototype);
 
-Object.defineProperty($Table,'prototype',{value:new Proxy(_TablePrototype, {
+Object.setPrototypeOf(Table.prototype,new Proxy(_TablePrototype, {
     get(target, prop, receiver) {
         const $this = receiver ?? target;
         if (isNum(prop)) {
@@ -293,8 +293,4 @@ Object.defineProperty($Table,'prototype',{value:new Proxy(_TablePrototype, {
         }
         return Reflect.set(...arguments);
     }
-})});
-
-
-extend($Table,HTMLTableElement);
-extend(Table,$Table);
+});
