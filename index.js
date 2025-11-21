@@ -157,6 +157,7 @@ const Row = class Row{
                     console.warn(e);
                 }
             }
+            return Object.setPrototypeOf(tr,Row.prototype);
         }
         return Object.setPrototypeOf(create('tr'),Row.prototype);
     }
