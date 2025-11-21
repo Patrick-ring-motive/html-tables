@@ -49,8 +49,11 @@ $Row.prototype = new Proxy(_RowPrototype,{
     const $this = receiver ?? target;
     if(isNum(prop) && prop >= 0){
         const num = parseInt(prop);
-        for(let i = 0;i !== num; ++i){
-            if
+        const numtt = num++;
+        for(let i = 0;i !== numtt; ++i){
+            if(!getCells($this)[i]){
+                $this.appendChild(create('td'));
+            }
         }
     }
     return Reflect.get(...arguments);
