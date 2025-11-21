@@ -162,7 +162,7 @@ Object.setPrototypeOf(Row.prototype,new Proxy(_RowPrototype,{
     }
     return Reflect.set(...arguments);
   },
-});
+}));
 
 const getRows = el => {
     return el?.rows ?? elementSelectAll(el, 'tr:not(tr tr)');
@@ -252,4 +252,4 @@ Object.setPrototypeOf(Table.prototype,new Proxy(_TablePrototype, {
         }
         return Reflect.set(...arguments);
     }
-});
+}));
