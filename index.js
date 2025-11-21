@@ -8,6 +8,16 @@ const isNum = x =>{
 
 };
 
+const instanceOf = (x,y) =>{
+    try{
+        return x instanceof y;
+    }catch{
+        return false;
+    }
+};
+
+const isNode = x => instanceOf(x,Node) || x?.constructor?.name == 'Node';
+
 const create = x =>{
     try{
         return document.createElement(String(x));
