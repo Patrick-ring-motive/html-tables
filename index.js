@@ -165,16 +165,19 @@ const getRows = el => {
 const Table = class Table extends HTMLTableElement {
     constructor(data) {
         const table = Object.setPrototypeOf(create('table'), Table.prototype);
+        console.log({data});
         if(isNode(data)){
             data = getRows(data);
         }
         if (isList(data)) {
             const grid = [...data];
+            console.log({grid});
             const gridLength = grid.length;
             for (let i = 0; i !== gridLength; ++i) {
                 try{
                     const row = new Row();
                     let list = grid[i];
+                    console.log({list});
                     if(isNode(list)){
                         list = getCells(list);
                     }
@@ -220,6 +223,7 @@ Table.prototype = new Proxy(_TablePrototype, {
                 }
             }
             const row = new Row(getRows($this)[num]);
+            getRows($this)[num].replaceWith(row);
             // Value should be an array or a row element
             if (isList(value)) {
                 const arr = [...value];
