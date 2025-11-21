@@ -125,8 +125,8 @@ const $Table = class Table extends HTMLTableElement {
                 try{
                     const row = new $Row();
                     let list = grid[i];
-                    if(isNode(arr)){
-                        list = getCells(arr);
+                    if(isNode(list)){
+                        list = getCells(list);
                     }
                     if (isList(list)) {
                         const arr = [...list];
@@ -172,7 +172,7 @@ $Table.prototype = new Proxy(_TablePrototype, {
             const row = getRows($this)[num];
             // Value should be an array or a row element
             if (isList(value)) {
-                const arr = [...list];
+                const arr = [...value];
                 const arrLength = arr.length;
                 for (let x = 0; x !== arrLength; ++x) {
                     try{
