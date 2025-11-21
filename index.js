@@ -124,7 +124,7 @@ const Row = class Row extends HTMLTableRowElement{
 
 const _RowPrototype = Row.prototype;
 
-Row.prototype = new Proxy(_RowPrototype,{
+Object.defineProperty(Row,'prototype',{value:new Proxy(_RowPrototype,{
   get(target, prop, receiver) {
     const $this = receiver ?? target;
     if(isNum(prop)){
@@ -157,7 +157,7 @@ Row.prototype = new Proxy(_RowPrototype,{
     }
     return Reflect.set(...arguments);
   },
-});
+})});
 
 const getRows = el => {
     return elementSelectAll(el, 'tr:not(tr tr)');
@@ -205,7 +205,7 @@ const Table = class Table extends HTMLTableElement {
 
 const _TablePrototype = Table.prototype;
 
-Table.prototype = new Proxy(_TablePrototype, {
+Object.defineProperty(Table,'prototype',{value:new Proxy(_TablePrototype, {
     get(target, prop, receiver) {
         const $this = receiver ?? target;
         if (isNum(prop)) {
@@ -245,4 +245,4 @@ Table.prototype = new Proxy(_TablePrototype, {
         }
         return Reflect.set(...arguments);
     }
-});
+})});
