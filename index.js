@@ -32,6 +32,10 @@ const isNode = x => instanceOf(x,Node)
                  || isPrototypeOf(Element.prototype,x) 
                  || x?.constructor?.name?.endsWith?.('Element');
 
+const isTR = x   => instanceOf(x,HTMLTableRowElement) 
+                 || isPrototypeOf(HTMLTableRowElement.prototype,x) 
+                 || x?.constructor?.name == 'HTMLTableRowElement';
+
 const isArray = x => instanceOf(x,Array) 
                   || isPrototypeOf(Array.prototype,x)
                   || Array.isArray(x)
@@ -82,8 +86,38 @@ const fillCells = (row,num) =>{
         }
 };
 
+const makeCell = x =>{
+    if(x?.tagName == 'TD'){
+        return x;
+    }
+    if(!isNode(x)){
+        x = document.createTextNode(String(x));
+    }
+    const cell = create('td');
+    cell.appendChild(x);
+    return cell;
+};
+
 const Row = class Row extends HTMLTableRowElement{
-    constructor(){
+    constructor(list){
+        if(isNode(list)){
+            if(isTR(list)){
+                return Object.setPrototypeOf(list,Row.prototype);
+            }
+            list = list.childNodes;
+        }
+        if(isList(list)){
+            list = [...list];
+            const tr = create('tr');
+            const listLength = list.length;
+            for(let i = 0; i !== listLnegth; ++i){
+                try{
+                    tr.appendChild(makeCell(list[i]));
+                }catch(e){
+                    console.warn(e);
+                }
+            }
+        }
         return Object.setPrototypeOf(create('tr'),Row.prototype);
     }
 }
@@ -110,6 +144,10 @@ Row.prototype = new Proxy(_RowPrototype,{
         }
         const cell = getCells($this)[num];
         if(!isNode(value)){
+            if(value?.tagName == 'TD'){
+                cell.replaceWith(value);
+                return value;
+            }
             value = document.createTextNode(String(value));
         }
         cell.innerText = '';
@@ -181,7 +219,7 @@ Table.prototype = new Proxy(_TablePrototype, {
                     $this.appendChild(new Row());
                 }
             }
-            const row = getRows($this)[num];
+            const row = new Row(getRows($this)[num]);
             // Value should be an array or a row element
             if (isList(value)) {
                 const arr = [...value];
