@@ -1,7 +1,7 @@
 
 const isNum = x =>{
     try{
-        return String(x).length != 0 && !isNaN(x);
+        return String(x).trim().length != 0 && !isNaN(x);
     }catch{
         return false;
     }
