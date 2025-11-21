@@ -115,16 +115,25 @@ const getRows = el => {
 const $Table = class Table extends HTMLTableElement {
     constructor(data) {
         const table = Object.setPrototypeOf(create('table'), $Table.prototype);
-        
-        if (data && data.length) {
-            for (let i = 0; i < data.length; i++) {
+        if(isNode(data)){
+            data = getRows(data);
+        }
+        if (isList(data)) {
+            const grid = [...data];
+            const gridLength = grid.length;
+            for (let i = 0; i !== gridLength; ++i) {
+                try{
                 const row = new $Row();
-                if (data[i] && data[i].length) {
+                let arr = grid[i];
+                if (grid[i] && data[i].length) {
                     for (let j = 0; j < data[i].length; j++) {
                         row[j] = data[i][j];
                     }
                 }
                 table.appendChild(row);
+                }catch(e){
+                    console.warn(e);
+                }
             }
         }
         
