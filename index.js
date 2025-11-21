@@ -1,41 +1,4 @@
-    const Q = fn => {
-        try {
-            return fn?.()
-        } catch {}
-    };
-    const constructPrototype = newClass => {
-        try {
-            if (newClass?.prototype) return newClass;
-            const constProto = newClass?.constructor?.prototype;
-            if (constProto) {
-                newClass.prototype = Q(() => constProto?.bind?.(constProto)) ?? Object.create(Object(constProto));
-                return newClass;
-            }
-            newClass.prototype = Q(() => newClass?.bind?.(newClass)) ?? Object.create(Object(newClass));
-        } catch (e) {
-            console.warn(e, newClass);
-        }
-    };
-    const extend = (thisClass, superClass) => {
-        try {
-            constructPrototype(thisClass);
-            constructPrototype(superClass);
-            Object.setPrototypeOf(
-                thisClass.prototype,
-                superClass?.prototype ??
-                superClass?.constructor?.prototype ??
-                superClass
-            );
-            Object.setPrototypeOf(thisClass, superClass);
-
-        } catch (e) {
-            console.warn(e, {
-                thisClass,
-                superClass
-            });
-        }
-        return thisClass;
-    };
+    
 
 const isNum = x =>{
     try{
@@ -136,9 +99,8 @@ const makeCell = x =>{
     return cell;
 };
 
-const $Row = function $Row(){};
 
-const Row = class Row{
+const Row = class Row extends HTMLTableRowElement{
     constructor(list){
         if(isNode(list)){
             if(isTR(list)){
@@ -165,9 +127,9 @@ const Row = class Row{
 
 const DEBUG = false;
 
-const _RowPrototype = $Row.prototype;
+const _RowPrototype = Object.getPrototypeOf(Row.prototype);
 
-Object.defineProperty($Row,'prototype',{value:new Proxy(_RowPrototype,{
+Object.setPrototypeOf(Row.prototype,new Proxy(_RowPrototype,{
   get(target, prop, receiver) {
     const $this = receiver ?? target;
     if(isNum(prop)){
@@ -200,10 +162,7 @@ Object.defineProperty($Row,'prototype',{value:new Proxy(_RowPrototype,{
     }
     return Reflect.set(...arguments);
   },
-})});
-
-extend($Row,HTMLTableRowElement);
-extend(Row,$Row);
+});
 
 const getRows = el => {
     return el?.rows ?? elementSelectAll(el, 'tr:not(tr tr)');
