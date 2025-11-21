@@ -27,7 +27,10 @@ const isPrototypeOf = (x,y)=>{
 
 const isNode = x => instanceOf(x,Node) 
                  || isPrototypeOf(Node.prototype,x) 
-                 || x?.constructor?.name == 'Node';
+                 || x?.constructor?.name == 'Node'
+                 || instanceOf(x,Element) 
+                 || isPrototypeOf(Element.prototype,x) 
+                 || x?.constructor?.name?.endsWith?.('Element');
 
 const isArray = x => instanceOf(x,Array) 
                   || isPrototypeOf(Array.prototype,x)
