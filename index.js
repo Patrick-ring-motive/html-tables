@@ -40,7 +40,11 @@ const isNodeList = x => instanceOf(x,NodeList)
 
 const isHTMLCollection = x => instanceOf(x,HTMLCollection) 
                  || isPrototypeOf(HTMLCollection.prototype,x) 
-                 || x?.constructor?.name == 'HTMLCollection';
+                 || x?.constructor?.name == 'HTMLCollection'
+                 || instanceOf(x,HTMLAllCollection) 
+                 || isPrototypeOf(HTMLAllCollection.prototype,x) 
+                 || x?.constructor?.name == 'HTMLAllCollection';
+
 
 const isList = x => isArray(x) || isNodeList(x) || isHTMLCollection(x);
 
