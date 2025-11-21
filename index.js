@@ -73,15 +73,15 @@ const getCells = el =>{
     return elementSelectAll(el,'td:not(td td)');
 };
 
-const $Row = class Row extends HTMLTableRowElement{
+const Row = class Row extends HTMLTableRowElement{
     constructor(){
-        return Object.setPrototypeOf(create('tr'),$Row.prototype);
+        return Object.setPrototypeOf(create('tr'),Row.prototype);
     }
 }
 
-const _RowPrototype = $Row.prototype;
+const _RowPrototype = Row.prototype;
 
-$Row.prototype = new Proxy(_RowPrototype,{
+Row.prototype = new Proxy(_RowPrototype,{
   get(target, prop, receiver) {
     const $this = receiver ?? target;
     if(isNum(prop)){
@@ -115,9 +115,9 @@ const getRows = el => {
     return elementSelectAll(el, 'tr:not(tr tr)');
 };
 
-const $Table = class Table extends HTMLTableElement {
+const Table = class Table extends HTMLTableElement {
     constructor(data) {
-        const table = Object.setPrototypeOf(create('table'), $Table.prototype);
+        const table = Object.setPrototypeOf(create('table'), Table.prototype);
         if(isNode(data)){
             data = getRows(data);
         }
@@ -126,7 +126,7 @@ const $Table = class Table extends HTMLTableElement {
             const gridLength = grid.length;
             for (let i = 0; i !== gridLength; ++i) {
                 try{
-                    const row = new $Row();
+                    const row = new Row();
                     let list = grid[i];
                     if(isNode(list)){
                         list = getCells(list);
@@ -152,9 +152,9 @@ const $Table = class Table extends HTMLTableElement {
     }
 };
 
-const _TablePrototype = $Table.prototype;
+const _TablePrototype = Table.prototype;
 
-$Table.prototype = new Proxy(_TablePrototype, {
+Table.prototype = new Proxy(_TablePrototype, {
     get(target, prop, receiver) {
         const $this = receiver ?? target;
         if (isNum(prop)) {
@@ -169,7 +169,7 @@ $Table.prototype = new Proxy(_TablePrototype, {
             const numt1 = num + 1;
             for (let i = 0; i !== numt1; ++i) {
                 if (!getRows($this)[i]) {
-                    $this.appendChild(new $Row());
+                    $this.appendChild(new Row());
                 }
             }
             const row = getRows($this)[num];
