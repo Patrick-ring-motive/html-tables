@@ -143,6 +143,7 @@ Row.prototype = new Proxy(_RowPrototype,{
             }
         }
         const cell = getCells($this)[num];
+        console.log({cell});
         if(!isNode(value)){
             if(value?.tagName == 'TD'){
                 cell.replaceWith(value);
