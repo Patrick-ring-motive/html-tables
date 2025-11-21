@@ -25,7 +25,24 @@ const isPrototypeOf = (x,y)=>{
     }
 };
 
-const isNode = x => instanceOf(x,Node) || isPrototypeOf(Node.prototype,x) || x?.constructor?.name == 'Node';
+const isNode = x => instanceOf(x,Node) 
+                 || isPrototypeOf(Node.prototype,x) 
+                 || x?.constructor?.name == 'Node';
+
+const isArray = x => instanceOf(x,Array) 
+                  || isPrototypeOf(Array.prototype,x)
+                  || Array.isArray(x)
+                  || x?.constructor?.name == 'Array';
+
+const isNodeList = x => instanceOf(x,NodeList) 
+                 || isPrototypeOf(NodeList.prototype,x) 
+                 || x?.constructor?.name == 'NodeList';
+
+const isHTMLCollection = x => instanceOf(x,HTMLCollection) 
+                 || isPrototypeOf(HTMLCollection.prototype,x) 
+                 || x?.constructor?.name == 'HTMLCollection';
+
+const isList = x => isArray(x) || isNodeList(x) || isHTMLCollection(x);
 
 const create = x =>{
     try{
