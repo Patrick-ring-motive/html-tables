@@ -110,7 +110,7 @@ const Row = class Row extends HTMLTableRowElement{
             list = [...list];
             const tr = create('tr');
             const listLength = list.length;
-            for(let i = 0; i !== listLnegth; ++i){
+            for(let i = 0; i !== listLength; ++i){
                 try{
                     tr.appendChild(makeCell(list[i]));
                 }catch(e){
