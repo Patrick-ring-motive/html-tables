@@ -5,7 +5,6 @@ const isNum = x =>{
     }catch{
         return false;
     }
-
 };
 
 const instanceOf = (x,y) =>{
@@ -41,6 +40,7 @@ const elementSelectAll = (el,query) =>{
     try{
         return el.querySelectorAll(query);
     }catch(e){
+        console.warn(e,el,query);
         return create('NodeList').childNodes;
     }
 };
@@ -65,7 +65,7 @@ $Row.prototype = new Proxy(_RowPrototype,{
     }
     return Reflect.get(...arguments);
   },
-  set(target, prop, receiver) {
+  set(target, prop, value, receiver) {
     const $this = receiver ?? target;
     if(isNum(prop) && prop >= 0){
         const num = parseInt(prop);
@@ -75,11 +75,20 @@ $Row.prototype = new Proxy(_RowPrototype,{
                 $this.appendChild(create('td'));
             }
         }
+        const cell = getCells($this)[num];
+        if(!isNode(value)){
+            value = document.createTextNode(String(value));
+        }
+        cell.innerText = '';
+        cell.appendChild(value);
+        return value;
     }
-    return Reflect.get(...arguments);
+    return Reflect.set(...arguments);
   },
 });
 
-const Table = class Table extends HTMLTableElement{
-    constructor
+const $Table = class Table extends HTMLTableElement{
+    constructor(){
+        return Object.setPrototypeOf(create('table'),$Table.prototype);
+    }
 }
