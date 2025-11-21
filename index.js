@@ -123,20 +123,28 @@ const $Table = class Table extends HTMLTableElement {
             const gridLength = grid.length;
             for (let i = 0; i !== gridLength; ++i) {
                 try{
-                const row = new $Row();
-                let arr = grid[i];
-                if (grid[i] && data[i].length) {
-                    for (let j = 0; j < data[i].length; j++) {
-                        row[j] = data[i][j];
+                    const row = new $Row();
+                    let list = grid[i];
+                    if(isNode(arr)){
+                        list = getCells(arr);
                     }
-                }
-                table.appendChild(row);
+                    if (isList(list)) {
+                        const arr = [...list];
+                        const arrLength = arr.length;
+                        for (let x = 0; x !== arrLength; ++x) {
+                            try{
+                                row[x] = arr[x];
+                            }catch(e){
+                                console.warn(e);
+                            }
+                        }
+                    }
+                    table.appendChild(row);
                 }catch(e){
                     console.warn(e);
                 }
             }
         }
-        
         return table;
     }
 };
@@ -164,8 +172,14 @@ $Table.prototype = new Proxy(_TablePrototype, {
             const row = getRows($this)[num];
             // Value should be an array or a row element
             if (isList(value)) {
-                for (let j = 0; j < value.length; j++) {
-                    row[j] = value[j];
+                const arr = [...list];
+                const arrLength = arr.length;
+                for (let x = 0; x !== arrLength; ++x) {
+                    try{
+                        row[x] = arr[x];
+                    }catch(e){
+                        console.warn(e);
+                    }
                 }
             } else if (isNode(value)) {
                 $this.replaceChild(value, row);
