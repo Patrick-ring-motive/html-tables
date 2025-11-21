@@ -17,6 +17,18 @@ const create = x =>{
     }
 };
 
+const elementSelectAll = (el,query) =>{
+    try{
+        return el.querySelectorAll(query);
+    }catch(e){
+        return create('NodeList').childNodes;
+    }
+};
+
+const getCells = el =>{
+    return elementSelectAll(el,'td:not(td td)');
+};
+
 const $Row = class Row extends HTMLTableRowElement{
     constructor(){
         return Object.setPrototypeOf(create('tr'),$Row.prototype);
@@ -29,15 +41,16 @@ $Row.prototype = new Proxy(_RowPrototype,{
   get(target, prop, receiver) {
     const $this = receiver ?? target;
     if(isNum(prop)){
-        return $this?.querySelectorAll?.('td:not(td td)')?.[prop];
+        return getCells($this)?.[prop];
     }
     return Reflect.get(...arguments);
   },
   set(target, prop, receiver) {
     const $this = receiver ?? target;
     if(isNum(prop) && prop >= 0){
-        for(const td of $this){
-            
+        const num = parseInt(prop);
+        for(let i = 0;i !== num; ++i){
+            if
         }
     }
     return Reflect.get(...arguments);
