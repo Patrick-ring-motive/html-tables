@@ -1,3 +1,41 @@
+    const Q = fn => {
+        try {
+            return fn?.()
+        } catch {}
+    };
+    const constructPrototype = newClass => {
+        try {
+            if (newClass?.prototype) return newClass;
+            const constProto = newClass?.constructor?.prototype;
+            if (constProto) {
+                newClass.prototype = Q(() => constProto?.bind?.(constProto)) ?? Object.create(Object(constProto));
+                return newClass;
+            }
+            newClass.prototype = Q(() => newClass?.bind?.(newClass)) ?? Object.create(Object(newClass));
+        } catch (e) {
+            console.warn(e, newClass);
+        }
+    };
+    const extend = (thisClass, superClass) => {
+        try {
+            constructPrototype(thisClass);
+            constructPrototype(superClass);
+            Object.setPrototypeOf(
+                thisClass.prototype,
+                superClass?.prototype ??
+                superClass?.constructor?.prototype ??
+                superClass
+            );
+            Object.setPrototypeOf(thisClass, superClass);
+
+        } catch (e) {
+            console.warn(e, {
+                thisClass,
+                superClass
+            });
+        }
+        return thisClass;
+    };
 
 const isNum = x =>{
     try{
@@ -98,7 +136,9 @@ const makeCell = x =>{
     return cell;
 };
 
-const Row = class Row extends HTMLTableRowElement{
+const $Row = function $Row(){};
+
+const Row = class Row{
     constructor(list){
         if(isNode(list)){
             if(isTR(list)){
@@ -122,9 +162,9 @@ const Row = class Row extends HTMLTableRowElement{
     }
 }
 
-const _RowPrototype = Row.prototype;
+const _RowPrototype = $Row.prototype;
 
-Object.defineProperty(Row,'prototype',{value:new Proxy(_RowPrototype,{
+Object.defineProperty($Row,'prototype',{value:new Proxy(_RowPrototype,{
   get(target, prop, receiver) {
     const $this = receiver ?? target;
     if(isNum(prop)){
@@ -159,11 +199,16 @@ Object.defineProperty(Row,'prototype',{value:new Proxy(_RowPrototype,{
   },
 })});
 
+extend($Row,HTMLTableRowElement);
+extend(Row,$Row);
+
 const getRows = el => {
     return elementSelectAll(el, 'tr:not(tr tr)');
 };
 
-const Table = class Table extends HTMLTableElement {
+const $Table = function $Table(){};
+
+const Table = class Table {
     constructor(data) {
         const table = Object.setPrototypeOf(create('table'), Table.prototype);
         console.log({data});
@@ -203,9 +248,9 @@ const Table = class Table extends HTMLTableElement {
     }
 };
 
-const _TablePrototype = Table.prototype;
+const _TablePrototype = $Table.prototype;
 
-Object.defineProperty(Table,'prototype',{value:new Proxy(_TablePrototype, {
+Object.defineProperty($Table,'prototype',{value:new Proxy(_TablePrototype, {
     get(target, prop, receiver) {
         const $this = receiver ?? target;
         if (isNum(prop)) {
@@ -246,3 +291,7 @@ Object.defineProperty(Table,'prototype',{value:new Proxy(_TablePrototype, {
         return Reflect.set(...arguments);
     }
 })});
+
+
+extend($Table,HTMLTableElement);
+extend(Table,$Table);
