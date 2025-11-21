@@ -104,8 +104,61 @@ $Row.prototype = new Proxy(_RowPrototype,{
   },
 });
 
-const $Table = class Table extends HTMLTableElement{
-    constructor(){
-        return Object.setPrototypeOf(create('table'),$Table.prototype);
+const getRows = el => {
+    return elementSelectAll(el, 'tr:not(tr tr)');
+};
+
+const $Table = class Table extends HTMLTableElement {
+    constructor(data) {
+        const table = Object.setPrototypeOf(create('table'), $Table.prototype);
+        
+        if (data && data.length) {
+            for (let i = 0; i < data.length; i++) {
+                const row = new $Row();
+                if (data[i] && data[i].length) {
+                    for (let j = 0; j < data[i].length; j++) {
+                        row[j] = data[i][j];
+                    }
+                }
+                table.appendChild(row);
+            }
+        }
+        
+        return table;
     }
-}
+};
+
+const _TablePrototype = $Table.prototype;
+
+$Table.prototype = new Proxy(_TablePrototype, {
+    get(target, prop, receiver) {
+        const $this = receiver ?? target;
+        if (isNum(prop)) {
+            return getRows($this)?.[prop];
+        }
+        return Reflect.get(...arguments);
+    },
+    set(target, prop, value, receiver) {
+        const $this = receiver ?? target;
+        if (isNum(prop) && prop >= 0) {
+            const num = parseInt(prop);
+            const numt1 = num + 1;
+            for (let i = 0; i !== numt1; ++i) {
+                if (!getRows($this)[i]) {
+                    $this.appendChild(new $Row());
+                }
+            }
+            const row = getRows($this)[num];
+            // Value should be an array or a row element
+            if (isList(value)) {
+                for (let j = 0; j < value.length; j++) {
+                    row[j] = value[j];
+                }
+            } else if (isNode(value)) {
+                $this.replaceChild(value, row);
+            }
+            return value;
+        }
+        return Reflect.set(...arguments);
+    }
+});
