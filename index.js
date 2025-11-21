@@ -163,6 +163,8 @@ const Row = class Row{
     }
 }
 
+const DEBUG = false;
+
 const _RowPrototype = $Row.prototype;
 
 Object.defineProperty($Row,'prototype',{value:new Proxy(_RowPrototype,{
@@ -184,7 +186,7 @@ Object.defineProperty($Row,'prototype',{value:new Proxy(_RowPrototype,{
             }
         }
         const cell = getCells($this)[num];
-        console.log({cell});
+        if(DEBUG)console.log({cell});
         if(!isNode(value)){
             if(value?.tagName == 'TD'){
                 cell.replaceWith(value);
@@ -212,19 +214,19 @@ const $Table = function $Table(){};
 const Table = class Table {
     constructor(data) {
         const table = Object.setPrototypeOf(create('table'), Table.prototype);
-        console.log({data});
+        if(DEBUG)console.log({data});
         if(isNode(data)){
             data = getRows(data);
         }
         if (isList(data)) {
             const grid = [...data];
-            console.log({grid});
+            if(DEBUG)console.log({grid});
             const gridLength = grid.length;
             for (let i = 0; i !== gridLength; ++i) {
                 try{
                     const row = new Row();
                     let list = grid[i];
-                    console.log({list});
+                    if(DEBUG)console.log({list});
                     if(isNode(list)){
                         list = getCells(list);
                     }
@@ -270,9 +272,9 @@ Object.defineProperty($Table,'prototype',{value:new Proxy(_TablePrototype, {
                 }
             }
             const row = new Row(getRows($this)[num]);
-            console.log({row});
+            if(DEBUG)console.log({row});
             getRows($this)[num].replaceWith(row);
-            console.log(row.parentElement);
+            if(DEBUG)console.log(row.parentElement);
             // Value should be an array or a row element
             if (isList(value)) {
                 const arr = [...value];
