@@ -224,7 +224,9 @@ Table.prototype = new Proxy(_TablePrototype, {
                 }
             }
             const row = new Row(getRows($this)[num]);
+            console.log({row});
             getRows($this)[num].replaceWith(row);
+            console.log(row.parentElement);
             // Value should be an array or a row element
             if (isList(value)) {
                 const arr = [...value];
