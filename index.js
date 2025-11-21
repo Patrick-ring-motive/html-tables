@@ -11,12 +11,22 @@ const isNum = x =>{
 const instanceOf = (x,y) =>{
     try{
         return x instanceof y;
-    }catch{
+    }catch(e){
+        console.warn(e,x,y);
         return false;
     }
 };
 
-const isNode = x => instanceOf(x,Node) || x?.constructor?.name == 'Node';
+const isPrototypeOf = (x,y)=>{
+    try{
+        return x.isPrototypeOf(y);
+    }catch(e){
+        console.warn(e,x,y);
+        return false;
+    }
+};
+
+const isNode = x => instanceOf(x,Node) || isPrototypeOf(Node.prototype,x) || x?.constructor?.name == 'Node';
 
 const create = x =>{
     try{
