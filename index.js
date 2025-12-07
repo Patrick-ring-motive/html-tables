@@ -168,9 +168,12 @@ const getRows = el => {
     return el?.rows ?? elementSelectAll(el, 'tr:not(tr tr)');
 };
 
-
+const ArrayIter = Array.prototype[Symbol.iterator];
 
 const Table = class Table extends HTMLTableElement {
+    [Symbol.iterator](){
+        return ArrayIter.call(getRows(this));
+    }
     constructor(data) {
         const table = Object.setPrototypeOf(create('table'), Table.prototype);
         if(DEBUG)console.log({data});
